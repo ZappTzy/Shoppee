@@ -1,170 +1,160 @@
 import java.util.LinkedList;
 import java.util.Scanner;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-class Product {
-    String name;
-    double price;
-    int quantity;
-    String category;
-
-    public Product(String name, double price, int quantity, String category) {
-        this.name = name;
-        this.price = price;
-        this.quantity = quantity;
-        this.category = category;
-    }
-}
 
 public class ShoppingCart {
-    LinkedList<Product> cart = new LinkedList<>();
-    Map<String, List<Product>> productCategories = new HashMap<>();
 
-    public void addToCart(Product product) {
-        cart.add(product);
-    }
+    static class Product {
+        String name;
+        double price;
+        int quantity;
 
-    public void updateCart(String productName, int newQuantity) {
-        for (Product product : cart) {
-            if (product.name.equals(productName)) {
-                product.quantity = newQuantity;
-                return;
-            }
+        public Product(String name, double price, int quantity) {
+            this.name = name;
+            this.price = price;
+            this.quantity = quantity;
         }
-        System.out.println("Product not found in the cart.");
-    }
-
-    public void deleteFromCart(String productName) {
-        for (Product product : cart) {
-            if (product.name.equals(productName)) {
-                cart.remove(product);
-                return;
-            }
-        }
-        System.out.println("Product not found in the cart.");
-    }
-
-    public void viewCart() {
-        if (cart.isEmpty()) {
-            System.out.println("Your shopping cart is empty.");
-        } else {
-            for (Product product : cart) {
-                System.out.println("Product: " + product.name + " - Price: $" + product.price + " - Quantity: " + product.quantity);
-            }
-        }
-    }
-
-    public Product searchCart(String productName) {
-        for (Product product : cart) {
-            if (product.name.equals(productName)) {
-                return product;
-            }
-        }
-        return null;
-    }
-
-    public void addProductToCategory(Product product) {
-        String category = product.category;
-        if (!productCategories.containsKey(category)) {
-            productCategories.put(category, new LinkedList<>());
-        }
-        productCategories.get(category).add(product);
-    }
-
-    public List<Product> getProductsInCategory(String category) {
-        if (productCategories.containsKey(category)) {
-            return productCategories.get(category);
-        }
-        return new LinkedList<>();
     }
 
     public static void main(String[] args) {
-        ShoppingCart shoppingCart = new ShoppingCart();
-        try (Scanner scanner = new Scanner(System.in)) {
-            while (true) {
-                System.out.println("\nShopping Cart Menu:");
-                System.out.println("1. Add to Cart");
-                System.out.println("2. Update Cart");
-                System.out.println("3. Delete from Cart");
-                System.out.println("4. View Cart");
-                System.out.println("5. Search Cart");
-                System.out.println("6. Add Product to Category");
-                System.out.println("7. View Products in Category");
-                System.out.println("8. Exit");
-                System.out.print("Enter your choice: ");
-                int choice = scanner.nextInt();
-                scanner.nextLine(); // Consume the newline character
+        Scanner scanner = new Scanner(System.in);
+        List<Product> cart = new LinkedList<>();
 
-                switch (choice) {
-                    case 1:
-                        System.out.print("Enter product name: ");
-                        String name = scanner.nextLine();
-                        System.out.print("Enter product price: ");
-                        double price = scanner.nextDouble();
-                        System.out.print("Enter product quantity: ");
-                        int quantity = scanner.nextInt();
-                        System.out.print("Enter product category: ");
-                        String category = scanner.nextLine(); // Handle category input with spaces
-                        Product product = new Product(name, price, quantity, category);
-                        shoppingCart.addToCart(product);
-                        shoppingCart.addProductToCategory(product);
-                        break;
-                    case 2:
-                        System.out.print("Enter product name to update: ");
-                        String updateName = scanner.nextLine();
-                        System.out.print("Enter new quantity: ");
-                        int newQuantity = scanner.nextInt();
-                        shoppingCart.updateCart(updateName, newQuantity);
-                        break;
-                    case 3:
-                        System.out.print("Enter product name to delete: ");
-                        String deleteName = scanner.nextLine();
-                        shoppingCart.deleteFromCart(deleteName);
-                        break;
-                    case 4:
-                        shoppingCart.viewCart();
-                        break;
-                    case 5:
-                        System.out.print("Enter product name to search: ");
-                        String searchName = scanner.nextLine();
-                        Product foundProduct = shoppingCart.searchCart(searchName);
-                        if (foundProduct != null) {
-                            System.out.println("Product found: " + foundProduct.name);
-                        } else {
-                            System.out.println("Product not found in the cart.");
-                        }
-                        break;
-                    case 6:
-                        System.out.print("Enter product name to categorize: ");
-                        String categoryName = scanner.nextLine();
-                        System.out.print("Enter category name: ");
-                        String productCategory = scanner.nextLine();
-                        Product categoryProduct = new Product(categoryName, 0, 0, productCategory);
-                        shoppingCart.addProductToCategory(categoryProduct);
-                        break;
-                    case 7:
-                        System.out.print("Enter category name to view products: ");
-                        String viewCategory = scanner.nextLine();
-                        List<Product> productsInCategory = shoppingCart.getProductsInCategory(viewCategory);
-                        if (!productsInCategory.isEmpty()) {
-                            System.out.println("Products in Category: " + viewCategory);
-                            for (Product p : productsInCategory) {
-                                System.out.println("Product: " + p.name + " - Price: $" + p.price + " - Quantity: " + p.quantity);
-                            }
-                        } else {
-                            System.out.println("No products found in the category.");
-                        }
-                        break;
-                    case 8:
-                        System.out.println("Thank you for Shopping. Have a nice day!");
-                        System.exit(0);
-                        break;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
-                }
+        int choice;
+        do {
+            System.out.println("\nShopping Cart");
+            System.out.println("1. Add to cart");
+            System.out.println("2. Update cart");
+            System.out.println("3. Delete cart");
+            System.out.println("4. View cart");
+            System.out.println("5. Search cart");
+            System.out.println("6. Exit");
+            System.out.print("Select your choice: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addToCart(scanner, cart);
+                    break;
+                case 2:
+                    updateCart(scanner, cart);
+                    break;
+                case 3:
+                    deleteCart(scanner, cart);
+                    break;
+                case 4:
+                    viewCart(cart);
+                    break;
+                case 5:
+                    searchCart(scanner, cart);
+                    break;
+                case 6:
+                    System.out.println("Thank You for shopping, Have a nice day!.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
             }
+        } while (choice != 6);
+    }
+
+    private static void addToCart(Scanner scanner, List<Product> cart) {
+        System.out.print("Enter product name: ");
+        String name = scanner.next();
+        System.out.print("Enter product price: ");
+        double price = scanner.nextDouble();
+        System.out.print("Enter product quantity: ");
+        int quantity = scanner.nextInt();
+
+        cart.add(new Product(name, price, quantity));
+        System.out.println("Product added to cart.");
+    }
+
+    private static void updateCart(Scanner scanner, List<Product> cart) {
+        if (cart.isEmpty()) {
+            System.out.println("Cart is empty.");
+            return;
+        }
+
+        System.out.print("Enter product name to update: ");
+        String name = scanner.next();
+
+        boolean isUpdated = false;
+        for (Product product : cart) {
+            if (product.name.equalsIgnoreCase(name)) {
+                System.out.print("Enter new product price: ");
+                double price = scanner.nextDouble();
+                System.out.print("Enter new product quantity: ");
+                int quantity = scanner.nextInt();
+                product.price = price;
+                product.quantity = quantity;
+                isUpdated = true;
+                break;
+            }
+        }
+
+        if (isUpdated) {
+            System.out.println("Product updated in cart.");
+        } else {
+            System.out.println("Product not found in cart.");
+        }
+    }
+
+    private static void deleteCart(Scanner scanner, List<Product> cart) {
+        if (cart.isEmpty()) {
+            System.out.println("Cart is empty.");
+            return;
+        }
+
+        System.out.print("Enter product name to delete: ");
+        String name = scanner.next();
+
+        boolean isDeleted = cart.removeIf(product -> product.name.equalsIgnoreCase(name));
+
+        if (isDeleted) {
+            System.out.println("Product deleted from cart.");
+        } else {
+            System.out.println("Product not found in cart.");
+        }
+    }
+
+    private static void viewCart(List<Product> cart) {
+        if (cart.isEmpty()) {
+            System.out.println("Cart is empty.");
+            return;
+        }
+
+        System.out.println("\nProduct Name - Price - Quantity");
+        double total = 0;
+        for (Product product : cart) {
+            System.out.println(product.name + " - " + product.price + " - " + product.quantity);
+            total += product.price * product.quantity;
+        }
+
+        System.out.println("Total Price: " + total);
+    }
+
+    private static void searchCart(Scanner scanner, List<Product> cart) {
+        if (cart.isEmpty()) {
+            System.out.println("Cart is empty.");
+            return;
+        }
+
+        System.out.print("Enter product name to search: ");
+        String name = scanner.next();
+
+        boolean isFound = false;
+        for (Product product : cart) {
+            if (product.name.equalsIgnoreCase(name)) {
+                System.out.println("Product found in cart.");
+                System.out.println("Product Name - Price - Quantity");
+                System.out.println(product.name + " - " + product.price + " - " + product.quantity);
+                isFound = true;
+                break;
+            }
+        }
+
+        if (!isFound) {
+            System.out.println("Product not found in cart.");
         }
     }
 }
